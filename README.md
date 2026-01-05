@@ -3,6 +3,8 @@
 Welcome to the **Data Warehouse and Analytics Project** repository.
 This project demonstrates a comprehensive data warehousing and analytics solution, from building a DWH to generating actionable insights.
 
+---
+
 ## Project Requirements
 
 ### Building the Data Warehouse 
@@ -16,8 +18,6 @@ Develop a modern DWH using SQL Server (or alternative) to consolidate sales data
 - **Integration:** Combine both sources into a single, user-friendly data model designed for analytical queries.
 - **Scope:** Focus on the latest dataset only. Historization of data is not required.
 - **Documentation:** Provide clear documentation of the data model to support both business stakeholders and analysts.
-
----
 
 ### BI: Analytics & Reporting
 
