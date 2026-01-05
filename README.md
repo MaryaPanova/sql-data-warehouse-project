@@ -19,9 +19,9 @@ Develop a modern DWH using SQL Server (or alternative) to consolidate sales data
 
 ---
 
-## BI: Analytics & Reporting (Data Analysis)
+### BI: Analytics & Reporting
 
-### Objective
+#### Objective
 
 Develop SQL-based analytics to deliver detailed insights into:
 
