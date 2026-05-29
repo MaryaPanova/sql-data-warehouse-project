@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: stg_crm__cust_info
+    description: "Cleansed CRM customers: deduplicated to the latest record per customer, names trimmed, marital status & gender decoded."
+    columns:
+      - name: cst_id
+        description: "Customer business key from CRM."
+        data_tests: [not_null, unique]
+      - name: cst_key
+        description: "Customer alphanumeric key used to join to ERP feeds."
+        data_tests: [not_null]
+      - name: cst_marital_status
+        data_tests:
+          - accepted_values:
+              values: ['Single', 'Married', 'n/a']
+      - name: cst_gndr
+        data_tests:
+          - accepted_values:
+              values: ['Female', 'Male', 'n/a']
+
+  - name: stg_crm__prd_info
+    description: "Cleansed CRM products: prd_key split into category id + product key, cost defaulted, product line decoded, validity end-date derived."
+    columns:
+      - name: prd_id
+        description: "Product business key."
+        data_tests: [not_null, unique]
+      - name: prd_cost
+        description: "Product cost; nulls defaulted to 0."
+        data_tests: [not_null]
+      - name: prd_line
+        data_tests:
+          - accepted_values:
+              values: ['Mountain', 'Road', 'Other Sales', 'Touring', 'n/a']
+
+  - name: stg_crm__sales_details
+    description: "Cleansed CRM sales: integer dates parsed to DATE, sales/price recomputed where missing or inconsistent."
+    columns:
+      - name: sls_ord_num
+        description: "Sales order number."
+        data_tests: [not_null]
+      - name: sls_quantity
+        data_tests: [not_null]
+
+  - name: stg_erp__cust_az12
+    description: "Cleansed ERP demographics: NAS prefix stripped from id, future birthdates nulled, gender standardised."
+    columns:
+      - name: cid
+        description: "Customer key, aligned to CRM cst_key."
+        data_tests: [not_null]
+      - name: gen
+        data_tests:
+          - accepted_values:
+              values: ['Female', 'Male', 'n/a']
+
+  - name: stg_erp__loc_a101
+    description: "Cleansed ERP location: id de-dashed, country codes normalised to full names."
+    columns:
+      - name: cid
+        description: "Customer key, aligned to CRM cst_key."
+        data_tests: [not_null]
+
+  - name: stg_erp__px_cat_g1v2
+    description: "ERP product category lookup (already clean; pass-through)."
+    columns:
+      - name: id
+        description: "Category id, joins to stg_crm__prd_info.cat_id."
+        data_tests: [not_null, unique]
