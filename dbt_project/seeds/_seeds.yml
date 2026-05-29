@@ -1,0 +1,39 @@
+version: 2
+
+# Seeds represent the raw "bronze" layer: the ERP and CRM source extracts,
+# loaded verbatim from CSV with `dbt seed`. They are intentionally only lightly
+# tested here — known quality issues (duplicates, nulls, malformed dates) are
+# expected and get resolved in the staging layer.
+#
+# NOTE on freshness: dbt's source-freshness checks apply to true external
+# `sources` (live warehouse tables with a loaded_at timestamp). Because this
+# portfolio build is self-contained on CSV seeds, freshness is not applicable;
+# the commented `sources:` block below shows how it would be declared if these
+# feeds landed in a warehouse instead.
+
+seeds:
+  - name: crm_cust_info
+    description: "Raw CRM customer master (one row per customer create event)."
+  - name: crm_prd_info
+    description: "Raw CRM product catalogue, including historical versions."
+  - name: crm_sales_details
+    description: "Raw CRM sales transactions. Dates are 8-digit integers."
+  - name: erp_cust_az12
+    description: "Raw ERP customer demographics (birthdate, gender)."
+  - name: erp_loc_a101
+    description: "Raw ERP customer location / country."
+  - name: erp_px_cat_g1v2
+    description: "Raw ERP product category / subcategory lookup."
+
+# Example of declaring these as live warehouse sources with freshness checks:
+#
+# sources:
+#   - name: crm
+#     database: raw
+#     schema: crm
+#     loaded_at_field: _loaded_at
+#     freshness:
+#       warn_after:  {count: 24, period: hour}
+#       error_after: {count: 48, period: hour}
+#     tables:
+#       - name: sales_details

@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: int_customers__joined
+    description: "CRM customer master unified with ERP demographics and location. CRM is the system of record for gender."
+    columns:
+      - name: customer_id
+        description: "CRM customer business key."
+        data_tests: [not_null, unique]
+      - name: gender
+        data_tests:
+          - accepted_values:
+              values: ['Female', 'Male', 'n/a']
+
+  - name: int_products__enriched
+    description: "Current CRM products enriched with ERP category/subcategory. Historical product versions are filtered out."
+    columns:
+      - name: product_id
+        description: "Product business key."
+        data_tests: [not_null, unique]
+      - name: product_number
+        description: "Product key used to join to sales."
+        data_tests: [not_null]
