@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Gold-layer customer dimension (star schema). One row per customer with a surrogate key."
+    columns:
+      - name: customer_key
+        description: "Surrogate key for the customer dimension."
+        data_tests: [not_null, unique]
+      - name: customer_id
+        description: "CRM customer business key."
+        data_tests: [not_null, unique]
+      - name: gender
+        data_tests:
+          - accepted_values:
+              values: ['Female', 'Male', 'n/a']
+      - name: country
+        description: "Customer country (normalised)."
+
+  - name: dim_products
+    description: "Gold-layer product dimension (star schema). Current products only, one row per product with a surrogate key."
+    columns:
+      - name: product_key
+        description: "Surrogate key for the product dimension."
+        data_tests: [not_null, unique]
+      - name: product_id
+        description: "Product business key."
+        data_tests: [not_null, unique]
+      - name: product_number
+        description: "Product key used to join from the sales fact."
+        data_tests: [not_null]
+
+  - name: fct_sales
+    description: "Gold-layer sales fact (star schema). One row per sales order line, linked to the customer and product dimensions."
+    columns:
+      - name: order_number
+        description: "Sales order number."
+        data_tests: [not_null]
+      - name: product_key
+        description: "FK to dim_products.product_key."
+        data_tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_key
+      - name: customer_key
+        description: "FK to dim_customers.customer_key."
+        data_tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_key
+      - name: sales_amount
+        description: "Revenue for the line (quantity * price). Validated > 0 by assert_positive_sales_amount."
+        data_tests: [not_null]
+      - name: quantity
+        data_tests: [not_null]

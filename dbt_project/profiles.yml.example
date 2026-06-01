@@ -1,0 +1,32 @@
+# Copy this file to profiles.yml (which is gitignored) and adjust as needed.
+#
+#   cp profiles.yml.example profiles.yml
+#
+# By default dbt looks for profiles in ~/.dbt/profiles.yml. To use this local
+# copy instead, run dbt with:  dbt run --profiles-dir .
+#
+# This project ships with a DuckDB profile so it runs with zero external
+# infrastructure — DuckDB builds an embedded analytical database file
+# (dwh.duckdb) right inside the project from the CSV seeds.
+
+sql_data_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: dwh.duckdb
+      threads: 4
+
+    # Example alternative target matching the original SQL Server warehouse.
+    # Requires: pip install dbt-sqlserver  + an ODBC driver + a running server.
+    # sqlserver:
+    #   type: sqlserver
+    #   driver: 'ODBC Driver 18 for SQL Server'
+    #   server: localhost
+    #   port: 1433
+    #   database: DataWarehouse
+    #   schema: dbo
+    #   user: "{{ env_var('DWH_USER') }}"
+    #   password: "{{ env_var('DWH_PASSWORD') }}"
+    #   encrypt: true
+    #   trust_cert: true
